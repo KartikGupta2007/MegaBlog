@@ -122,6 +122,7 @@ export class Service{
         }
     }
 
+    //very fast, no need to await, just return the url for the file preview
     previewFile(fileId){
         try {
             return this.bucket.getFilePreview({
