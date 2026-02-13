@@ -15,14 +15,14 @@ function Signup() {
   const create = async (data) => {
     setError("");
     try {
-      const userData = await authService.createAccount(data);
-      if (userData) {
+      const creatingAccount = await authService.createAccount(data);
+      if (creatingAccount) {
         const userData = await authService.getCurrentUser();
         if (userData) dispatch(login(userData));
         navigate("/");
       }
     } catch (error) {
-      setError(error.message);
+      setError(error.message || "something went wrong!!!");
     }
   };
 
@@ -53,9 +53,16 @@ function Signup() {
         <form onSubmit={handleSubmit(create)}>
           <div className="space-y-5">
             <Input
-              label="Full Name: "
-              placeholder="Enter your full name"
-              {...register("name", {
+              label="First Name: "
+              placeholder="Enter your first name"
+              {...register("First-name", {
+                required: true,
+              })}
+            />
+            <Input
+              label="Last Name: "
+              placeholder="Enter your Last name"
+              {...register("Last-name", {
                 required: true,
               })}
             />

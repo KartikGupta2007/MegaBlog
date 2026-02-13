@@ -1,3 +1,4 @@
+// Rich Text Editor
 import React from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Controller } from "react-hook-form";
@@ -10,8 +11,10 @@ export default function RTE({ name, control, label, defaultValue = "" }) {
       <Controller
         name={name || "content"}
         control={control}
-        render={({ field: { onChange } }) => (
+        render={({ field }) => (
           <Editor
+            value={field.value}
+            onEditorChange={field.onChange}
             initialValue={defaultValue}
             init={{
               initialValue: defaultValue,
@@ -44,7 +47,6 @@ export default function RTE({ name, control, label, defaultValue = "" }) {
               content_style:
                 "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }"
             }}
-            onEditorChange={onChange}
           />
         )}
       />
