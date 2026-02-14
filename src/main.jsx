@@ -6,13 +6,13 @@ import { Provider } from "react-redux";
 import store from "./store/store.js";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Protected } from "./components";
-import Home from "./pages/Home.jsx";
-import AddPost from "./pages/AddPost";
-import Signup from "./pages/Signup";
+import Home from "./Pages/Home.jsx";
+import AddPost from "./Pages/AddPost";
+import Signup from "./Pages/Signup";
 import Login from "./Pages/Login";
-import EditPost from "./pages/EditPost";
-import Post from "./pages/Post";
-import AllPosts from "./pages/AllPosts";
+import EditPost from "./Pages/EditPost";
+import Post from "./Pages/Post";
+import AllPosts from "./Pages/AllPosts";
 
 const router = createBrowserRouter([
   {
