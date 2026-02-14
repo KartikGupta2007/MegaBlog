@@ -23,35 +23,36 @@ export default function PostForm({ post }) {
             const file = data.image[0] ? await service.uploadFile(data.image[0]) : null;
 
             if (file) {
-                service.deleteFile(post.FeaturedImage);
+                await service.deleteFile(post.FeaturedImage);
             }
 
             const dbPost = await service.updatePost({
                 ...data,
-                FeaturedImage: file ? file.$id : post.FeaturedImage
+                featuredImage: file ? file.$id : post.FeaturedImage,
+                userId: userData.$id,
             });
 
             if (dbPost) {
                 navigate(`/post/${dbPost.$id}`);
+                navigate(0);
             }
         }
         else {
-            const file = data.image[0] ? await service.uploadFile(data.image[0]) : null;
+            const file = data.image?.[0] ? await service.uploadFile(data.image[0]) : null;
 
-            if (file) {
-                const fileId = file.$id;
-                data.FeaturedImage = fileId;
-                const dbPost = await service.createPost({ ...data, userId: userData.$id });
-
-                if (dbPost) {
-                    navigate(`/post/${dbPost.$id}`);
-                }
+            if (!file) {
+                alert("Please upload a featured image");
+                return;
             }
-            else{
-                const dbPost = await service.createPost({ ...data, UserId: userData.$id });
-                 if (dbPost) {
-                    navigate(`/post/${dbPost.$id}`);
-                }
+
+            const dbPost = await service.createPost({
+            ...data,
+            featuredImage: file.$id,
+            userId: userData.$id,
+            });
+
+            if (dbPost) {
+                navigate(`/post/${dbPost.$id}`);
             }
         }
     };
@@ -109,14 +110,14 @@ export default function PostForm({ post }) {
                     </div>
                 )}
                 <Input
-                    label={(post) ? "Update Image" : "Featured Image :"}
+                    label ={(post) ? "Update Image" : "Featured Image :"}
                     type="file"
                     className="mb-4"
                     accept="image/png, image/jpg, image/jpeg, image/gif"
-                    {...register("image", { required: false })}
+                    {...register("image", { required: !post })}
                 />
                 <div className="mb-4">
-                    <label className="block mb-1 font-medium">Status :</label>
+                    <label className="block mb-1 font-normal">Status :</label>
                     <Select
                         options={["active", "inactive"]}
                         {...register("status", { required: true })}
