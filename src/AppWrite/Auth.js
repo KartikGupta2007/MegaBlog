@@ -20,7 +20,7 @@ export class AuthService {
                 name:name
             });
             if(user){
-                return await this.account.login(email, password);
+                return await this.login({email, password});
             }else{
                 return user;
             }
@@ -39,7 +39,8 @@ export class AuthService {
             });
         }
         catch(error){
-            throw new Error(error);
+            console.log(error)
+            return null;
         }
     }
     

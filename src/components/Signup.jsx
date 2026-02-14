@@ -9,8 +9,9 @@ import { useForm } from "react-hook-form";
 function Signup() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit,formState:{errors} } = useForm({mode:"onChange"});
 
   const create = async (data) => {
     setError("");
@@ -79,14 +80,45 @@ function Signup() {
                 },
               })}
             />
-            <Input
-              label="Password: "
-              type="password"
-              placeholder="Enter your password"
-              {...register("password", {
-                required: true,
-              })}
-            />
+            {errors.email && (
+              <p className="text-red-600 text-sm -mt-3">
+                {errors.email.message || "Invalid email address"}
+              </p>
+            )}
+            
+            <div className="relative">
+              <Input
+                label="Password: "
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters",
+                  },
+                  validate: {
+                    hasUpper: (v) => /[A-Z]/.test(v) || "Must include an uppercase letter",
+                    hasLower: (v) => /[a-z]/.test(v) || "Must include a lowercase letter",
+                    hasNumber: (v) => /\d/.test(v) || "Must include a number",
+                    hasSpecial: (v) =>
+                      /[!@#$%^&*(),.?\":{}|<>]/.test(v) || "Must include a special character",
+                  },
+                })}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-10 text-sm text-blue-600 hover:underline"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-red-600 text-sm -mt-3">
+                {errors.password.message}
+              </p>
+            )}
             <Button type="submit" className="w-full">
               Create Account
             </Button>
