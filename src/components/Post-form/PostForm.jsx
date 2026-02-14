@@ -23,36 +23,27 @@ export default function PostForm({ post }) {
             const file = data.image[0] ? await service.uploadFile(data.image[0]) : null;
 
             if (file) {
-                await service.deleteFile(post.FeaturedImage);
+                service.deleteFile(post.FeaturedImage);
             }
 
-            const dbPost = await service.updatePost({
+            const dbPost = await service.updatePost(post.$id, {
                 ...data,
-                featuredImage: file ? file.$id : post.FeaturedImage,
-                userId: userData.$id,
+                featuredImage: file ? file.$id : undefined,
             });
 
             if (dbPost) {
                 navigate(`/post/${dbPost.$id}`);
-                navigate(0);
             }
-        }
-        else {
-            const file = data.image?.[0] ? await service.uploadFile(data.image[0]) : null;
+        } else {
+            const file = await service.uploadFile(data.image[0]);
+            if (file) {
+                const fileId = file.$id;
+                data.featuredImage = fileId;
+                const dbPost = await service.createPost({ ...data, userId: userData.$id });
 
-            if (!file) {
-                alert("Please upload a featured image");
-                return;
-            }
-
-            const dbPost = await service.createPost({
-            ...data,
-            featuredImage: file.$id,
-            userId: userData.$id,
-            });
-
-            if (dbPost) {
-                navigate(`/post/${dbPost.$id}`);
+                if (dbPost) {
+                    navigate(`/post/${dbPost.$id}`);
+                }
             }
         }
     };

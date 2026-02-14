@@ -20,9 +20,9 @@ export class Service{
                 databaseId: conf.appwriteDatabaseId,
                 tableId: conf.appwriteTableId,
                 rowId: slug,
-                data: { 
+                data: {
                     Title: title,
-                    Content: content, 
+                    Content: content,
                     FeaturedImage: featuredImage, 
                     Status: status, 
                     UserId: userId
