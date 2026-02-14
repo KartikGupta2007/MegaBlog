@@ -115,12 +115,13 @@ export default function PostForm({ post }) {
                     accept="image/png, image/jpg, image/jpeg, image/gif"
                     {...register("image", { required: false })}
                 />
-                <Select
-                    options={["active", "inactive"]}
-                    label="Status"
-                    className="mb-4"
-                    {...register("status", { required: true })}
-                />
+                <div className="mb-4">
+                    <label className="block mb-1 font-medium">Status :</label>
+                    <Select
+                        options={["active", "inactive"]}
+                        {...register("status", { required: true })}
+                    />
+                </div>
                 <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
                     {post ? "Update" : "Submit"}
                 </Button>
