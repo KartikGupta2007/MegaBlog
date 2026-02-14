@@ -35,10 +35,12 @@ export default function PostForm({ post }) {
                 navigate(`/post/${dbPost.$id}`);
             }
         } else {
-            const file = await service.uploadFile(data.image[0]);
+            const file = await service.uploadFile(data.image[0]) || { $id: null };
+            // console.log(file);
             if (file) {
                 const fileId = file.$id;
                 data.featuredImage = fileId;
+                // console.log(data);
                 const dbPost = await service.createPost({ ...data, userId: userData.$id });
 
                 if (dbPost) {
