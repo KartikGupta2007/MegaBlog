@@ -20,17 +20,11 @@ export default function PostForm({ post }) {
 
     const submit = async (data) => {
         if (post) {
-            const file = data.image[0] ? await service.uploadFile(data.image[0]) : null;
-
+            const file = data.image?.[0] ? await service.uploadFile(data.image[0]) : null;
             if (file) {
-                service.deleteFile(post.FeaturedImage);
+                data.featuredImage = file.$id;
             }
-
-            const dbPost = await service.updatePost(post.$id, {
-                ...data,
-                featuredImage: file ? file.$id : undefined,
-            });
-
+            const dbPost = await service.updatePost({ ...data, userId: userData.$id });
             if (dbPost) {
                 navigate(`/post/${dbPost.$id}`);
             }
