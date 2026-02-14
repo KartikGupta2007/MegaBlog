@@ -5,6 +5,7 @@ import authService from './AppWrite/Auth';
 import './App.css'
 import {Header} from './components';
 import {Footer} from './components';
+import { Outlet } from 'react-router-dom';
 
 function App() {
   const[loading, setLoading] = React.useState(true);
@@ -25,7 +26,7 @@ function App() {
       <div className='w-full block'>
         <Header />
         <main>
-        {/* TODO:  <Outlet /> */}
+          <Outlet />
         </main>
         <Footer />
       </div>

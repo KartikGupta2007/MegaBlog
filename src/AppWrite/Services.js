@@ -69,7 +69,7 @@ export class Service{
 
     async getSinglePost(slug){
         try{
-            return posts = await this.tablesDB.getRow({
+            return await this.tablesDB.getRow({
                 databaseId: conf.appwriteDatabaseId,
                 tableId: conf.appwriteTableId,
                 rowId: slug
@@ -82,11 +82,11 @@ export class Service{
 
     async getAllPosts(){
         try{
-            return posts = await this.tablesDB.listRows({
+            return await this.tablesDB.listRows({
                 databaseId: conf.appwriteDatabaseId,
                 tableId: conf.appwriteTableId,
                 queries:[
-                    Query.equal("Status", "published")
+                    Query.equal("Status", "active")
                 ]
             })
         }
@@ -128,7 +128,8 @@ export class Service{
             return this.bucket.getFilePreview({
                 bucketId: conf.appwriteBucketId,
                 fileId : fileId,
-            })
+                permissions: ['read("any")']
+            }).toString();
         } catch (error) {
             console.log(error);
             return null;

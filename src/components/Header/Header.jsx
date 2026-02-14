@@ -33,9 +33,6 @@ function Header() {
       slug:"/add-post",
       active:statusOfAuth
     },
-    {
-
-    }
   ]
   return (
     <header className='py-3 shadow bg-gray-500'>

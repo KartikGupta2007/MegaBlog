@@ -11,3 +11,4 @@ export { default as SignUp } from './Signup'
 export { default as PostCard } from './PostCard'
 export { default as RTE } from './RTE';
 export { default as PostForm } from './Post-form/PostForm'
+export {default as Protected } from './AuthLayout'

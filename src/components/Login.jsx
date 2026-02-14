@@ -3,20 +3,21 @@ import {Link,useNavigate} from 'react-router-dom'
 import {login as StoreLogin} from '../store/AuthFile'
 import {Button,Input,Logo} from '../components'
 import { useDispatch } from 'react-redux'
-import authService from '../AppWrite/Services'
+import authService from '../AppWrite/Auth'
 import { useForm } from 'react-hook-form'
+
 
 function Login() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {register,handleSubmit} = useForm();
+    const {register,handleSubmit,formState:{errors}} = useForm();
     // register is used to register the input fields and handleSubmit is used to handle the form submission which is just the syntaxx, it isnt handling to register the user.
     const [error,setError] = React.useState('');
     
     const login = async(data) => {
         try {
             setError('');
-            const session = await authService.login(data);
+            const session = await authService.login({...data});
             if(session){
                 const userData = await authService.getCurrentUser();
                 if(userData)dispatch(StoreLogin(userData));
@@ -25,6 +26,7 @@ function Login() {
                 setError('Login failed');
             }
         } catch (error) {
+            console.log(data)
             setError(error.message);
         }
     }
@@ -43,7 +45,7 @@ function Login() {
                 <Link to="/signup" className='font-medium text-primary transition-all duration-200 hover:underline '>Sign up</Link>
             </p>
             {error && <p className='text-red-600 mt-8 text-center'>{error}</p>}
-            <form onClick={handleSubmit(login)} className='mt-8'>
+            <form onSubmit={handleSubmit(login)} className='mt-8'>
                 <div className='space-y-5'>
                     <Input 
                     label="Email: " 
@@ -53,10 +55,13 @@ function Login() {
                         required: true,
                         validate: {
                             matchPatern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-                            "Email address must be a valid address",
+                            "Email address must be valid",
                         }
                     })}
                     />
+                    {errors.email && (
+                        <p className="text-red-500 text-sm">{errors.email.message}</p>
+                    )}
                     <Input 
                     label="Password" 
                     placeholder='Enter your password'
@@ -67,20 +72,10 @@ function Login() {
                             value: 8,
                             message: "Password must be at least 8 characters long"
                         },
-                        validate: {
-                            hasUpperCase: (value) =>
-                                /[A-Z]/.test(value) || "Must include at least one uppercase letter",
-                            hasLowerCase: (value) =>
-                                /[a-z]/.test(value) || "Must include at least one lowercase letter",
-                            hasNumber: (value) =>
-                                /[0-9]/.test(value) || "Must include at least one number",
-                            hasSpecialChar: (value) =>
-                                /[!@#$%^&*]/.test(value) || "Must include at least one special character"
-                        }
-                    })} />
-                    <button
-                    type='submit'
-                    className='w-full' >Sign in</button>
+                    })}/>
+                    {errors.password && (
+                        <p className="text-red-500 text-sm">{errors.password.message}</p>
+                    )}
                 </div>
                 <Button type='submit' className='w-full mt-5'>Login</Button>
             </form>

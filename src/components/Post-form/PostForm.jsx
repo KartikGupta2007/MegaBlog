@@ -8,10 +8,10 @@ import { useSelector } from "react-redux";
 export default function PostForm({ post }) {
     const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
         defaultValues:{
-            title: post?.title || "",
-            slug: post?.slug || "",
-            content: post?.content || "",
-            status: post?.status || "active",
+            title: post?.Title || "",
+            slug: post?.$id || "",
+            content: post?.Content || "",
+            status: post?.Status || "active",
         },
     });
 
@@ -23,12 +23,12 @@ export default function PostForm({ post }) {
             const file = data.image[0] ? await service.uploadFile(data.image[0]) : null;
 
             if (file) {
-                service.deleteFile(post.featuredImage);
+                service.deleteFile(post.FeaturedImage);
             }
 
             const dbPost = await service.updatePost({
                 ...data,
-                featuredImage: file ? file.$id : post.featuredImage
+                FeaturedImage: file ? file.$id : post.FeaturedImage
             });
 
             if (dbPost) {
@@ -40,7 +40,7 @@ export default function PostForm({ post }) {
 
             if (file) {
                 const fileId = file.$id;
-                data.featuredImage = fileId;
+                data.FeaturedImage = fileId;
                 const dbPost = await service.createPost({ ...data, userId: userData.$id });
 
                 if (dbPost) {
@@ -48,7 +48,7 @@ export default function PostForm({ post }) {
                 }
             }
             else{
-                const dbPost = await service.createPost({ ...data, userId: userData.$id });
+                const dbPost = await service.createPost({ ...data, UserId: userData.$id });
                  if (dbPost) {
                     navigate(`/post/${dbPost.$id}`);
                 }
@@ -69,7 +69,7 @@ export default function PostForm({ post }) {
 
     React.useEffect(() => {
         const subscription = watch((value, { name }) => {
-            if (name === "title") {
+            if (!post && name === "title" ) {
                 setValue("slug", slugTransform(value.title), { shouldValidate: true });
             }
         });
@@ -89,6 +89,7 @@ export default function PostForm({ post }) {
                 <Input
                     label="Slug :"
                     placeholder="Slug"
+                    disabled = {post}
                     className="mb-4"
                     {...register("slug", { required: true })}
                     onInput={(e) => {
@@ -101,8 +102,8 @@ export default function PostForm({ post }) {
                 {post && (
                     <div className="w-full mb-4">
                         <img
-                            src={service.getFilePreview(post.featuredImage)}
-                            alt={post.title}
+                            src={service.previewFile(post.FeaturedImage)}
+                            alt={post.Title}
                             className="rounded-lg"
                         />
                     </div>
@@ -112,7 +113,7 @@ export default function PostForm({ post }) {
                     type="file"
                     className="mb-4"
                     accept="image/png, image/jpg, image/jpeg, image/gif"
-                    {...register("image", { required: !post })}
+                    {...register("image", { required: false })}
                 />
                 <Select
                     options={["active", "inactive"]}
